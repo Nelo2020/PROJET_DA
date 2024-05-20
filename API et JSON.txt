@@ -1,0 +1,626 @@
+//creer un administrateur( id du role à 1)  ou employé (id du role à 2)
+API : http://localhost:9191/api/DA/creer
+JSON:{
+  "nom": "OSSAN",
+  "prenoms": "Behibro Richmond",
+  "genre": "M",
+  "email": "ossanrichmond0@gmail.com",
+  "username": "ossan",
+  "motpasse": "2020Richy@",
+  "poste": "INFORMATICIEN",
+  "telephone": "0789514415",
+  "actif": true,
+  "role": {
+    "id": 1
+  }
+}
+//connexion pour tous les utilisateurs
+API:  http://localhost:9191/api/CONNEXION_COMPTES/connexion
+JSON: {
+  "email": "ossanrichmond0@gmail.com",
+  "motpasse": "2020Richy@"
+}
+liste des employés de la DA avec la methode GET
+API:  http://localhost:9191/api/DA/users/EMPLOYEE
+retour:"[
+    {
+        "nom": "YOHOU",
+        "prenom": "Ange Stephan",
+        "email": "ossanrichmond1@gmail.com",
+        "poste": "ACTUAIRE",
+        "genre": "M",
+        "username": "yohou",
+        "telephone": "0789514415",
+        "role": "EMPLOYEE"
+    }
+]
+liste des administrateurs avec la methode GET
+API:  http://localhost:9191/api/DA/users/ADMINISTRATEUR
+retour:[
+    {
+        "nom": "OSSAN",
+        "prenom": "Behibro Richmond",
+        "email": "ossanrichmond0@gmail.com",
+        "poste": "INFORMATICIEN",
+        "genre": "M",
+        "username": "ossan",
+        "telephone": "0789514415",
+        "role": "ADMINISTRATEUR"
+    }
+]
+liste de tous les utilisateur à la DA (ADMINISTRATEUR ET EMPLOYE)
+API:  http://localhost:9191/api/DA/users
+[
+    {
+        "nom": "OSSAN",
+        "prenom": "Behibro Richmond",
+        "email": "ossanrichmond0@gmail.com",
+        "poste": "INFORMATICIEN",
+        "genre": "M",
+        "username": "ossan",
+        "telephone": "0789514415",
+        "role": "ADMINISTRATEUR"
+    },
+    {
+        "nom": "YOHOU",
+        "prenom": "Ange Stephan",
+        "email": "ossanrichmond1@gmail.com",
+        "poste": "ACTUAIRE",
+        "genre": "M",
+        "username": "yohou",
+        "telephone": "0789514415",
+        "role": "EMPLOYEE"
+    }
+]
+creer une societe d'assurance (VIE pour type_assurance_id=1, 2 pour IARD et 3 pour courtier)
+API: http://localhost:9191/api/Societe/creer
+JSON:{
+  "nom": "AXIO",
+  "dirigeant": "KOUAKOU ANDREY",
+  "actif": true,
+  "siege": "Plateau, rue des banques",
+  "contact": "0123456789",
+  "num_agrement": "AGR1234569",
+  "email": "ossanrichmond2@NSIA.com",
+  "roles": {
+    "id": 3 // Assurez-vous que cet ID correspond à un rôle valide dans votre base de données
+  },
+  "typeAssurance": {
+    "id_typeassurance": 3 // Assurez-vous que cet ID correspond à un type d'assurance valide dans votre base de données
+  }
+}
+lister les societes VIE
+API: http://localhost:9191/api/Societe/societe/VIE
+retour:[
+    {
+        "nom": "NSIA",
+        "dirigeant": "KOUAKOU ALEXIS",
+        "siege": "Plateau, rue des banques",
+        "contact": "0123456789",
+        "num_agrement": "AGR1234567",
+        "email": "ossanrichmond0@NSIA.com",
+        "type_assurance": "VIE",
+        "role": "COMPAGNIE"
+    }
+]
+lister les societees IARD
+API:http://localhost:9191/api/Societe/societe/IARD
+retour:[
+    {
+        "nom": "NSIA",
+        "dirigeant": "KOUAKOU ALEXANDRE",
+        "siege": "Plateau, rue des banques",
+        "contact": "0123456789",
+        "num_agrement": "AGR1234568",
+        "email": "ossanrichmond1@NSIA.com",
+        "type_assurance": "IARD",
+        "role": "COMPAGNIE"
+    }
+]
+lister societes courtiers
+API : http://localhost:9191/api/Societe/societe/COURTIER
+retour:
+[
+    {
+        "nom": "AXIO",
+        "dirigeant": "KOUAKOU ANDREY",
+        "siege": "Plateau, rue des banques",
+        "contact": "0123456789",
+        "num_agrement": "AGR1234569",
+        "email": "ossanrichmond2@NSIA.com",
+        "type_assurance": "COURTIER",
+        "role": "COMPAGNIE"
+    }
+]
+lister toutes les societes
+API: http://localhost:9191/api/Societe/societe
+retour:
+[
+    {
+        "nom": "NSIA",
+        "dirigeant": "KOUAKOU ALEXIS",
+        "siege": "Plateau, rue des banques",
+        "contact": "0123456789",
+        "num_agrement": "AGR1234567",
+        "email": "ossanrichmond0@NSIA.com",
+        "type_assurance": "VIE",
+        "role": "COMPAGNIE"
+    },
+    {
+        "nom": "NSIA",
+        "dirigeant": "KOUAKOU ALEXANDRE",
+        "siege": "Plateau, rue des banques",
+        "contact": "0123456789",
+        "num_agrement": "AGR1234568",
+        "email": "ossanrichmond1@NSIA.com",
+        "type_assurance": "IARD",
+        "role": "COMPAGNIE"
+    },
+    {
+        "nom": "AXIO",
+        "dirigeant": "KOUAKOU ANDREY",
+        "siege": "Plateau, rue des banques",
+        "contact": "0123456789",
+        "num_agrement": "AGR1234569",
+        "email": "ossanrichmond2@NSIA.com",
+        "type_assurance": "COURTIER",
+        "role": "COMPAGNIE"
+    }
+]
+creer un menbre d'assurance
+chaque id_societe correspond à une societe d'assurance deja créee par l' admin
+API: http://localhost:9191/api/MembreAssurance/creer
+JSON:{
+  "nom": "Dupont",
+  "prenoms": "Jean",
+  "genre": "M",
+  "email": "jean.dupont@nsia.com",
+  "username": "jdupont",
+  "motpasse": "Nsia2024@",
+  "poste": "Manager",
+  "telephone": "0123456789",
+  "actif": true,
+  "societe": {
+    "id_societe": 1 // Assurez-vous que cet ID correspond à un rôle valide dans votre base de données
+  }
+} 
+liste des menbres d'assurance crées
+API: http://localhost:9191/api/MembreAssurance/membre
+retour:[
+    {
+        "nom": "Dupont",
+        "email": "jean.dupont@nsia.com",
+        "telephone": "0123456789",
+        "username": "jdupont",
+        "prenoms": "Jean",
+        "genre": "M",
+        "poste": "Manager",
+        "nom_societe": "NSIA",
+        "type_assurance": "VIE"
+    },
+    {
+        "nom": "Dupont1",
+        "email": "jean.dupont@nsia1.com",
+        "telephone": "0123456789",
+        "username": "jdupont",
+        "prenoms": "Jean",
+        "genre": "M",
+        "poste": "Manager",
+        "nom_societe": "NSIA",
+        "type_assurance": "IARD"
+    },
+    {
+        "nom": "Dupont2",
+        "email": "jean.dupont@axio.com",
+        "telephone": "0123456789",
+        "username": "jdupont",
+        "prenoms": "Jean",
+        "genre": "M",
+        "poste": "Manager",
+        "nom_societe": "AXIO",
+        "type_assurance": "COURTIER"
+    }
+]
+liste des menbres des compagnie assurance VIE, IARD, COURTIER
+API: http://localhost:9191/api/MembreAssurance/membre/VIE
+     http://localhost:9191/api/MembreAssurance/membre/IARD
+     http://localhost:9191/api/MembreAssurance/membre/COURTIER
+retour:[
+    {
+        "nom": "Dupont2",
+        "prenoms": "Jean",
+        "genre": "M",
+        "email": "jean.dupont@axio.com",
+        "username": "jdupont",
+        "poste": "Manager",
+        "nom_societe": "AXIO",
+        "typeAssurance": "COURTIER",
+        "telephone": "0123456789"
+    }
+]
+Modifier motpasse et role employe_DA
+API :http://localhost:9191/api/MODIFICATION/modifier/Employe_DA
+json :{
+   "email": "queenline809@gmail.com",
+  "nouveauMotDePasse": "moaye",
+  "confirmerNouveauMotDePasse": "moaye",
+
+  "role": {
+    "id": 2
+  }
+}
+retour:[le mot de passe et le role doivent etre differents]
+
+Modifier motpasse membreAssurance
+API: http://localhost:9191/api/MODIFICATION/modifier/Membre
+json:{
+     "email": "lines@example.com",
+  "nouveauMotDePasse": "lineesther",
+  "confirmerNouveauMotDePasse": "lineesther"
+
+}
+Modifier informations societes
+API:http://localhost:9191/api/MODIFICATION/modifier/SOCIETE
+json:{
+    "nom":"SALAM",
+    "dirigeant":"Mr JEAN",
+    "siege":"yopougon",
+    "contact":"4568",
+    "num_agrement":"AGR123yuiop",
+    "email": "NSIA@gmail.com" 
+}
+
+Creation note de conjoncture IARD 
+API:http://localhost:9191/api/IARD/creer
+json:{
+  "annee": "2023",
+  "trimestre": "trimestre1",
+  "nombre_de_contrats_assurance": 1250,
+  "acceptations_dommages": 300000,
+  "accidents_corporels": 150000,
+  "assurance_importation_des_marchandises": 50000,
+  "assurances_indicielles": 75000,
+  "autres_charges": 40000,
+  "autres_risques_dommages": 25000,
+  "autres_risques_automobiles": 80000,
+  "caution": 20000,
+  "credit": 30000,
+  "incendie_et_autres_dommages_aux_biens": 100000,
+  "maladie": 50000,
+  "microassurance": 15000,
+  "rc_automobile": 120000,
+  "dont_sisnistre_payee": 35000,
+  "production_des_courtiers": 400000,
+  "commissions_servies_aux_courtiers": 20000,
+  "commissions_servies_aux_autres_intermediaires": 10000,
+  "prime_impayee": 45000,
+  "emprunts_public_echus": 25000,
+  "frais_du_personnel": 85000,
+  "effectif_du_personnel": 65,
+  "statut": {
+    "idStatut": 1
+  }
+}
+Afficher les notes de conjonctures IARD de la base temporaire 
+API(GET): http://localhost:9191/api/IARD/ConjonctureIARDtemporaire
+retour:["date_soumission": "2024-04-14",
+        "annee": "2023",
+        "trimestre": "trimestre1",
+        "nombre_de_contrats_assurance": 1250,
+        "acceptations_dommages": 300000,
+        "accidents_corporels": 150000,
+        "assurance_importation_des_marchandises": 50000,
+        "assurances_indicielles": 75000,
+        "autres_charges": 40000,
+        "autres_risques_dommages": 25000,
+        "autres_risques_automobiles": 80000,
+        "caution": 20000,
+        "credit": 30000,
+        "incendie_et_autres_dommages_aux_biens": 100000,
+        "maladie": 50000,
+        "microassurance": 15000,
+        "rc_automobile": 120000,
+        "dont_sisnistre_payee": 35000,
+        "production_des_courtiers": 400000,
+        "commissions_servies_aux_courtiers": 20000,
+        "commissions_servies_aux_autres_intermediaires": 10000,
+        "prime_impayee": 45000,
+        "emprunts_public_echus": 25000,
+        "frais_du_personnel": 85000,
+        "effectif_du_personnel": 65,
+        "prime_emisse_nette_annulation": 950000,
+        "creances_sur_etat": 70000,
+        "stock_de_sinistres_bons_a_payer": 735000,
+        "nom_societe": "SALAM",
+        "type_assurance": "IARD",
+        "statut": "EN_COURS",
+        "nom_membre": "Dupont",
+        "prenoms_membre": "Jean",
+        "genre_membre": "Masculin",
+        "poste_membre": "Manager"]
+
+Afficher les notes de conjoncture IARD d'une societe precise 
+API :http://localhost:9191/api/IARD/rechercheNoteParNomSociete
+retour:["date_soumission": "2024-04-14",
+        "annee": "2023",
+        "trimestre": "trimestre1",
+        "nombre_de_contrats_assurance": 1250,
+        "acceptations_dommages": 300000,
+        "accidents_corporels": 150000,
+        "assurance_importation_des_marchandises": 50000,
+        "assurances_indicielles": 75000,
+        "autres_charges": 40000,
+        "autres_risques_dommages": 25000,
+        "autres_risques_automobiles": 80000,
+        "caution": 20000,
+        "credit": 30000,
+        "incendie_et_autres_dommages_aux_biens": 100000,
+        "maladie": 50000,
+        "microassurance": 15000,
+        "rc_automobile": 120000,
+        "dont_sisnistre_payee": 35000,
+        "production_des_courtiers": 400000,
+        "commissions_servies_aux_courtiers": 20000,
+        "commissions_servies_aux_autres_intermediaires": 10000,
+        "prime_impayee": 45000,
+        "emprunts_public_echus": 25000,
+        "frais_du_personnel": 85000,
+        "effectif_du_personnel": 65,
+        "prime_emisse_nette_annulation": 950000,
+        "creances_sur_etat": 70000,
+        "stock_de_sinistres_bons_a_payer": 735000,
+        "nom_societe": "SALAM",
+        "type_assurance": "IARD",
+        "statut": "EN_COURS",
+        "nom_membre": "Dupont",
+        "prenoms_membre": "Jean",
+        "genre_membre": "Masculin",
+        "poste_membre": "Manager"]
+
+
+Creation note de conjoncture VIE
+API:http://localhost:9191/api/VIE/creer
+json: {
+  "annee": "2023",
+  "trimestre": "trimestre1",
+  "nombre_contrat_assurance": 100,
+  "prime_impayee": 50000,
+  "emprunts_publics_echus": 7500,
+  "effectif_du_personnel": 150,
+  "dont_frais_du_personnel": 12000,
+  "autres_charges": 10000,
+  "commissions_servies_autres_intermediaires": 3000,
+  "production_des_autres_intermediaires": 25000,
+  "commissions_servies_courtiers": 5000,
+  "production_des_courtiers": 45000,
+  "contrats_cas_vie": 350,
+  "contrats_cas_deces": 450,
+  "contrats_mixtes": 120,
+  "capitalisation_et_epargne": 40000,
+  "complementaire": 20000,
+  "microassurance_vie": 5000,
+  "acceptations_vie": 10000,
+  "primes_cedees_en_reassurance": 4000,
+  "provisions_mathematiques": 50000,
+  "stock_sinistre_et_capitaux_echus": 8000,
+  "prestations_vie_effectivement_payee": 15000,
+  "capitalisation_et_epargne_collectives": 20000,
+  "capitalisation_et_epargne_individuelles": 20000,
+  "complementaires_collectives": 10000,
+  "complementaires_individuelles": 10000,
+  "contrats_en_cas_de_deces_individuelles": 225,
+  "contrats_en_cas_de_deces_collectives": 225,
+  "contrats_en_cas_de_vie_collectives": 175,
+  "contrats_en_cas_de_vie_individuelles": 175,
+  "contrats_mixtes_collectives": 60,
+  "contrats_mixtes_individuelles": 60,
+  "prestations_vie_effectivement_payees": 15000,
+  "provisions_athematiques": 50000,
+  "stock_de_sinistres_et_capitaux_echus": 8000,
+  "statut": {
+    "idStatut": 1
+  }
+  
+}
+
+
+Afficher les notes de conjonctures VIE de la base temporaire 
+API(GET): http://localhost:9191/api/VIE/ConjonctureVIEtemporaire
+retour:[  "date_soumission": "2024-04-14",
+        "annee": "2023",
+        "trimestre": "trimestre1",
+        "nombre_contrat_assurance": 100,
+        "prime_impayee": 50000,
+        "emprunts_publics_echus": 7500,
+        "effectif_du_personnel": 150,
+        "dont_frais_du_personnel": 12000,
+        "autres_charges": 10000,
+        "commissions_servies_autres_intermediaires": 3000,
+        "production_des_autres_intermediaires": 25000,
+        "commissions_servies_courtiers": 5000,
+        "production_des_courtiers": 45000,
+        "contrats_cas_vie": 350,
+        "contrats_cas_deces": 450,
+        "contrats_mixtes": 120,
+        "capitalisation_et_epargne": 40000,
+        "complementaire": 20000,
+        "microassurance_vie": 5000,
+        "acceptations_vie": 10000,
+        "primes_cedees_en_reassurance": 4000,
+        "provisions_mathematiques": 50000,
+        "stock_sinistre_et_capitaux_echus": 8000,
+        "prestations_vie_effectivement_payee": 15000,
+        "capitalisation_et_epargne_collectives": 20000,
+        "capitalisation_et_epargne_individuelles": 20000,
+        "complementaires_collectives": 10000,
+        "complementaires_individuelles": 10000,
+        "contrats_en_cas_de_deces_individuelles": 225,
+        "contrats_en_cas_de_deces_collectives": 225,
+        "contrats_en_cas_de_vie_collectives": 175,
+        "contrats_en_cas_de_vie_individuelles": 175,
+        "contrats_mixtes_collectives": 60,
+        "contrats_mixtes_individuelles": 60,
+        "prestations_vie_effectivement_payees": 15000,
+        "provisions_athematiques": 50000,
+        "stock_de_sinistres_et_capitaux_echus": 8000,
+        "assurances_individuelles": 60920,
+        "assurances_collectives": 60920,
+        "primes_emise_nette_annulations": 136840,
+        "creances_sur_etat": 57500,
+        "nom_societe": "NSIAVIE",
+        "type_assurance": "VIE",
+        "statut": "EN_COURS",
+        "nom_membre": "Dupont",
+        "prenoms_membre": "Jean",
+        "genre_membre": "Masculin",
+        "poste_membre": "Manager"]
+
+Afficher les notes de conjoncture VIE d'une societe precise 
+API :http://localhost:9191/api/VIE/rechercheNoteParNomSociete
+retour:[  "date_soumission": "2024-04-14",
+        "annee": "2023",
+        "trimestre": "trimestre1",
+        "nombre_contrat_assurance": 100,
+        "prime_impayee": 50000,
+        "emprunts_publics_echus": 7500,
+        "effectif_du_personnel": 150,
+        "dont_frais_du_personnel": 12000,
+        "autres_charges": 10000,
+        "commissions_servies_autres_intermediaires": 3000,
+        "production_des_autres_intermediaires": 25000,
+        "commissions_servies_courtiers": 5000,
+        "production_des_courtiers": 45000,
+        "contrats_cas_vie": 350,
+        "contrats_cas_deces": 450,
+        "contrats_mixtes": 120,
+        "capitalisation_et_epargne": 40000,
+        "complementaire": 20000,
+        "microassurance_vie": 5000,
+        "acceptations_vie": 10000,
+        "primes_cedees_en_reassurance": 4000,
+        "provisions_mathematiques": 50000,
+        "stock_sinistre_et_capitaux_echus": 8000,
+        "prestations_vie_effectivement_payee": 15000,
+        "capitalisation_et_epargne_collectives": 20000,
+        "capitalisation_et_epargne_individuelles": 20000,
+        "complementaires_collectives": 10000,
+        "complementaires_individuelles": 10000,
+        "contrats_en_cas_de_deces_individuelles": 225,
+        "contrats_en_cas_de_deces_collectives": 225,
+        "contrats_en_cas_de_vie_collectives": 175,
+        "contrats_en_cas_de_vie_individuelles": 175,
+        "contrats_mixtes_collectives": 60,
+        "contrats_mixtes_individuelles": 60,
+        "prestations_vie_effectivement_payees": 15000,
+        "provisions_athematiques": 50000,
+        "stock_de_sinistres_et_capitaux_echus": 8000,
+        "assurances_individuelles": 60920,
+        "assurances_collectives": 60920,
+        "primes_emise_nette_annulations": 136840,
+        "creances_sur_etat": 57500,
+        "nom_societe": "NSIAVIE",
+        "type_assurance": "VIE",
+        "statut": "EN_COURS",
+        "nom_membre": "Dupont",
+        "prenoms_membre": "Jean",
+        "genre_membre": "Masculin",
+        "poste_membre": "Manager"]
+
+Creation note de conjoncture COURTIER
+API:http://localhost:9191/api/COURTIER/creer
+json:{
+  "annee": "2023",
+  "trimestre": "trimestre1",
+  "nombre_hommes": 50,
+  "nombre_femmes": 30,
+  "bureaux_secondaire": 2,
+  "abidjan": 1,
+  "interieur": 1,
+  "societe_partenaire": 5,
+  "compte_courant": 1234567890,
+  "emissions_primes": 1500000,
+  "commissions_encaissees": 200000,
+  "total_charge_ou_frais_generaux": 250000,
+  "montant_fonds_geres": 300000,
+  "montant_honoraires": 50000,
+ "statut": {
+    "idStatut": 1
+  }
+}
+
+Afficher les notes de conjonctures COURTIER de la base temporaire 
+API :http://localhost:9191/api/COURTIER/ConjonctureCOURTIERtemporaire
+retour:[
+    {
+        "dateSoumission": "2024-04-14",
+        "annee": "2023",
+        "trimestre": "trimestre1",
+        "societe": "NSIAVIE",
+        "siege": "123 Rue de Paris, 75001 Paris",
+        "gerant": "Jean Dupont",
+        "telephone": "0123456789",
+        "email": "NSIACOURTIER@gmail.com",
+        "numero_RCCM": "AGR1234567",
+        "bureaux_secondaire": 2,
+        "abidjan": 1,
+        "interieur": 1,
+        "societe_partenaire": 5,
+        "compte_courant": 1234567890,
+        "nombre_hommes": 50,
+        "nombre_femmes": 30,
+        "total_personnel": 80,
+        "emissions_primes": 1500000,
+        "commissions_encaissees": 200000,
+        "total_charge_ou_frais_generaux": 250000,
+        "montant_fonds_geres": 300000,
+        "montant_honoraires": 50000,
+        "type_assurance": "COURTIER",
+        "statut": "EN_COURS",
+        "nom_membre": "Dupont",
+        "prenoms_membre": "Jean",
+        "genre_membre": "Masculin",
+        "poste_membre": "Manager"
+    }
+]
+
+Afficher les notes de conjoncture COURTIER d'une societe precise 
+API :http://localhost:9191/api/COURTIER/rechercheNoteParNomSociete
+retour:[
+    {
+        "dateSoumission": "2024-04-14",
+        "annee": "2023",
+        "trimestre": "trimestre1",
+        "societe": "NSIAVIE",
+        "siege": "123 Rue de Paris, 75001 Paris",
+        "gerant": "Jean Dupont",
+        "telephone": "0123456789",
+        "email": "NSIACOURTIER@gmail.com",
+        "numero_RCCM": "AGR1234567",
+        "bureaux_secondaire": 2,
+        "abidjan": 1,
+        "interieur": 1,
+        "societe_partenaire": 5,
+        "compte_courant": 1234567890,
+        "nombre_hommes": 50,
+        "nombre_femmes": 30,
+        "total_personnel": 80,
+        "emissions_primes": 1500000,
+        "commissions_encaissees": 200000,
+        "total_charge_ou_frais_generaux": 250000,
+        "montant_fonds_geres": 300000,
+        "montant_honoraires": 50000,
+        "type_assurance": "COURTIER",
+        "statut": "EN_COURS",
+        "nom_membre": "Dupont",
+        "prenoms_membre": "Jean",
+        "genre_membre": "Masculin",
+        "poste_membre": "Manager"
+    }
+]
+
+
+
+Validation ou refus par l'employe de la DA note IARD en fonction de la date de soumission 
+API:http://localhost:9191/api/IARD/final/13/04/2024/NSIA/lines@example.com
+
+
