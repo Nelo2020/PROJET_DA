@@ -182,6 +182,8 @@ public class ConfigurationSecuriteApplication {
 
                                                 // FIN ACTION COMPAGNIE
                                                 //INFORMATION DASHBORD
+                                                .requestMatchers(GET,"api/dashbord/VIE/annee").permitAll()
+                                                .requestMatchers(GET,"/api/dashbord/vu_ensemble2/{annee}/{trimestre}**").permitAll()
                                                 .requestMatchers(GET,"/api/dashbord/vu_ensemble/{annee}/{trimestre}**").permitAll()
                                                 .requestMatchers(GET,"api/dashbord/IARD/{annee}/{trimestre}").permitAll()
                                                 .requestMatchers(GET,"api/dashbord/VIE/{annee}/{trimestre}").permitAll()

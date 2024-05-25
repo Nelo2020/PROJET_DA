@@ -15,7 +15,10 @@ import java.util.Set;
 @Repository
 public interface Note_ConjonctureVIERepository extends JpaRepository<Note_ConjonctureVIE, Long> {
 
-
+        //Liste des années qui possèdent des notes de conjoncture
+        @Query("SELECT DISTINCT ncv.annee " +
+        "FROM Note_ConjonctureVIE ncv")
+        List<String> findListeNoteConjonturesAnnees();
 
     List<Note_ConjonctureVIE> findByDateSoumission(Date dateSoumission);
 

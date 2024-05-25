@@ -38,138 +38,155 @@ public class ApiDashboard {
     private DaRepository daRepository;
 
 
+    @GetMapping("/VIE/annee") 
+    public ResponseEntity<List<String>> getNCAnnees(){
+        List<String> annees = noteConjonctureVIERepository.findListeNoteConjonturesAnnees();
+        return ResponseEntity.ok().body(annees); 
+    }
 
-    // dashboard vu_ ensemble
-    @GetMapping("/vu_ensemble/{annee}/{trimestre}")
-    private Map<String, Long> getVuensemble(
+//New
+    //Vue d'ensemble 
+    @GetMapping("/vu_ensemble2/{annee}/{trimestre}")
+    private Map<String, Double> getVuensemble2(
             @PathVariable(value = "annee", required = false) String annee,
             @PathVariable(value = "trimestre", required = false) String trimestre) {
-        Map<String, Long> vu_ensemble = new HashMap<>();
-
+        Map<String, Double> vu_ensemble = new HashMap<>();
         if (annee != null && trimestre != null) {
-            int anneePrecedente = Integer.parseInt(annee) - 1;
-            //taux d evolution prime emise nette d'annulation
-            Long primeAnneeselectionneeVIE=noteConjonctureVIERepository.sumPrimeEmiseNetteAnnulationForTrimestre(annee, trimestre);
-            Long primeAnneeselectionnepreccedentVIE=noteConjonctureVIERepository.sumPrimeEmiseNetteAnnulationForTrimestre(String.valueOf(anneePrecedente), trimestre);
-            Long primeAnneeselectionneeIARD=noteConjonctureIARDRepository.sumPrimeEmiseNetteAnnulationForTrimestre(annee, trimestre);
-            Long primeAnneeselectionnepreccedentIARD=noteConjonctureIARDRepository.sumPrimeEmiseNetteAnnulationForTrimestre(String.valueOf(anneePrecedente), trimestre);
-            //taux d evolution sinistres payes
-            Long prestationAnneeselectionneeVIE=noteConjonctureVIERepository.sumPrestationVieEffectivementPayesForTrimestre(annee, trimestre);
-            Long prestationAnneepreccedentselectionneeVIE=noteConjonctureVIERepository.sumPrestationVieEffectivementPayesForTrimestre(String.valueOf(anneePrecedente), trimestre);
-            Long sinistreAnneeselectionneIARD=noteConjonctureIARDRepository.sumSinistre_A_PayeesForTrimestre(annee, trimestre);
-            Long sinistreAnneeselectionnepreccedentIARD=noteConjonctureIARDRepository.sumSinistre_A_PayeesForTrimestre(String.valueOf(anneePrecedente), trimestre);
-            Long stocksinistreAnneeselectionneeIARD=noteConjonctureIARDRepository.sumStock_de_sinistres_Bons_A_PayerForTrimestre(annee, trimestre);
-            Long stocksinistreAnneeselectionneeIARDs=noteConjonctureIARDRepository.sumStock_de_sinistres_Bons_A_PayerForTrimestre(String.valueOf(anneePrecedente), trimestre);
-            Long provisionAnneepreccedentselectionneVIE=noteConjonctureVIERepository.sumProvisionMathForTrimestre(annee, trimestre);
-            Long provisionAnneepreccedentselectionneVIEs=noteConjonctureVIERepository.sumProvisionMathForTrimestre(String.valueOf(anneePrecedente), trimestre);
-            Long dontsinistreAnneeselectionneeIARD=noteConjonctureIARDRepository.sumDont_Sisnistre_PayeeForTrimestre(annee, trimestre);
-            Long dontsinistreAnneepreccedentselectionneeIARD=noteConjonctureIARDRepository.sumDont_Sisnistre_PayeeForTrimestre(String.valueOf(anneePrecedente), trimestre);
-            Long tauxEvolutionVIE=((primeAnneeselectionneeVIE-primeAnneeselectionnepreccedentVIE)/primeAnneeselectionnepreccedentVIE)*100;
-            Long tauxEvolutionIARD=((primeAnneeselectionneeIARD-primeAnneeselectionnepreccedentIARD)/primeAnneeselectionnepreccedentIARD)*100;
-            Long tauxEvolutionCA=tauxEvolutionIARD+tauxEvolutionVIE;
-            Long prestationVIE=((prestationAnneeselectionneeVIE-prestationAnneepreccedentselectionneeVIE)/prestationAnneepreccedentselectionneeVIE)*100;
-            Long sinistreApayes=((sinistreAnneeselectionneIARD-sinistreAnneeselectionnepreccedentIARD)/sinistreAnneeselectionnepreccedentIARD)*100;
-            Long stock=((stocksinistreAnneeselectionneeIARD-stocksinistreAnneeselectionneeIARDs)/stocksinistreAnneeselectionneeIARDs)*100;
-            Long provision=(provisionAnneepreccedentselectionneVIE-provisionAnneepreccedentselectionneVIEs)/provisionAnneepreccedentselectionneVIEs*100;
-            Long dontsinistrespayes=((dontsinistreAnneeselectionneeIARD-dontsinistreAnneepreccedentselectionneeIARD)/dontsinistreAnneepreccedentselectionneeIARD)*100;
-
-
+            // Calcul des autres valeurs nécessaires
             Long totalSocietesIARD = noteConjonctureIARDRepository.countDistinctSocietesByAnneeAndTrimestre(annee, trimestre);
             Long totalSocietesVIE = noteConjonctureVIERepository.countDistinctSocietesByAnneeAndTrimestre(annee, trimestre);
-            Long totalSocietes = totalSocietesIARD + totalSocietesVIE;
+            Long totalSocietes = (totalSocietesIARD != null ? totalSocietesIARD : 0L) + (totalSocietesVIE != null ? totalSocietesVIE : 0L);
 
             Long caVie = noteConjonctureVIERepository.sumPrimeEmiseNetteAnnulationForTrimestre(annee, trimestre);
             Long caIard = noteConjonctureIARDRepository.sumPrimeEmiseNetteAnnulationForTrimestre(annee, trimestre);
-            Long catotal = caVie + caIard;
-
-            Long comIard = noteConjonctureIARDRepository.sumCommissionCourtierForTrimestre(annee, trimestre);
-            Long comVie = noteConjonctureVIERepository.sumCommissionCourtierForTrimestre(annee, trimestre);
-            Long comtotal = comIard + comVie;
-
-            Long sinistrepayesVie = noteConjonctureVIERepository.sumPrestationVieEffectivementPayesForTrimestre(annee, trimestre);
-            Long sinistrepayesIard = noteConjonctureIARDRepository.sumSinistre_A_PayeesForTrimestre(annee, trimestre);
-            Long sinistreTotal = sinistrepayesVie + sinistrepayesIard;
+            Double catotal = (caVie != null ? caVie.doubleValue() : 0.0) + (caIard != null ? caIard.doubleValue() : 0.0);
 
             Long contratVie = noteConjonctureVIERepository.sumNombreContrat(annee, trimestre);
             Long contratIard = noteConjonctureIARDRepository.sumNombreContrat(annee, trimestre);
-            Long contrattotal = contratVie + contratIard;
 
-            Long effectifIard = noteConjonctureIARDRepository.sumEffectifPersonnelIard(annee, trimestre);
-            Long effectifVie = noteConjonctureVIERepository.sumEffectifPersonnelVie(annee, trimestre);
-            Long effectiftotal = effectifIard + effectifVie;
-
-            Long sinistre_bon_a_paye = noteConjonctureIARDRepository.sumStock_de_sinistres_Bons_A_PayerForTrimestre(annee, trimestre);
-            Long provision_mathematique = noteConjonctureVIERepository.sumProvisionMathForTrimestre(annee, trimestre);
-            Long sinistre_payes = noteConjonctureIARDRepository.sumDont_Sisnistre_PayeeForTrimestre(annee, trimestre);
-
-            Long credit_caution = noteConjonctureIARDRepository.sumCredit_CautionForTrimestre(annee, trimestre);
-
-            vu_ensemble.put("Total_Societes", totalSocietes);
-            vu_ensemble.put("Nombre_Total_Societes_IARD", totalSocietesIARD);
-            vu_ensemble.put("Nombre_Total_Societes_VIE", totalSocietesVIE);
+            vu_ensemble.put("Total_Societes", (totalSocietes != null ? totalSocietes.doubleValue() : 0.0));
+            vu_ensemble.put("Nombre_Total_Societes_IARD", (totalSocietesIARD != null ? totalSocietesIARD.doubleValue() : 0.0));
+            vu_ensemble.put("Nombre_Total_Societes_VIE", (totalSocietesVIE != null ? totalSocietesVIE.doubleValue() : 0.0));
             vu_ensemble.put("CA_total", catotal);
-            vu_ensemble.put("CA_VIE", caVie);
-            vu_ensemble.put("CA_IARD", caIard);
-            vu_ensemble.put("Commission_courtiers_total", comtotal);
-            vu_ensemble.put("Commission_courtiers_VIE", comVie);
-            vu_ensemble.put("Commission_courtiers_IARD", comIard);
-            vu_ensemble.put("sinistres_payes_total", sinistreTotal);
-            vu_ensemble.put("sinistres_payes_VIE", sinistrepayesVie);
-            vu_ensemble.put("sinistres_payes_IARD", sinistrepayesIard);
-            vu_ensemble.put("nombre_contrat_total", contrattotal);
-            vu_ensemble.put("nombre_contrat_VIE", contratVie);
-            vu_ensemble.put("nombre_contrat_IARD", contratIard);
-            vu_ensemble.put("effectif_personnel_total", effectiftotal);
-            vu_ensemble.put("effectif_personnel_VIE", effectifVie);
-            vu_ensemble.put("effectif_personnel_IARD", effectifIard);
-            vu_ensemble.put("provision_mathematiques", provision_mathematique);
-            vu_ensemble.put("sinistre_bon_a_payees", sinistre_bon_a_paye);
-            vu_ensemble.put("sinistre_payees", sinistre_payes);
-            vu_ensemble.put("credit-caution", credit_caution);
-            vu_ensemble.put("Taux_Evolution_primes_emises_nettes_annulations_VIE", tauxEvolutionVIE);
-            vu_ensemble.put("Taux_Evolution_primes_emises_nettes_annulations_IARD", tauxEvolutionIARD);
-            vu_ensemble.put("Taux_Evolution_primes_emises_nettes_annulations", tauxEvolutionCA);
-            vu_ensemble.put("Prestations_vie_effectivement", prestationVIE);
-            vu_ensemble.put("Taux_Evolution_sinistres_a_payer", sinistreApayes);
-            vu_ensemble.put("Taux_Evolution_stock_sinistres_a_payer", stock);
-            vu_ensemble.put("Taux_Evolution_provision_mathematiques", provision);
-            vu_ensemble.put("Taux_Evolution_dont_sinistres_a_payer", dontsinistrespayes);
-        } else {
-            vu_ensemble.put("Total_Societes", 0L);
-            vu_ensemble.put("Nombre_Total_Societes_IARD", 0L);
-            vu_ensemble.put("Nombre_Total_Societes_VIE", 0L);
-            vu_ensemble.put("CA_total", 0L);
-            vu_ensemble.put("CA_VIE", 0L);
-            vu_ensemble.put("CA_IARD", 0L);
-            vu_ensemble.put("Commission_courtiers_total", 0L);
-            vu_ensemble.put("Commission_courtiers_VIE", 0L);
-            vu_ensemble.put("Commission_courtiers_IARD", 0L);
-            vu_ensemble.put("sinistres_payes_total", 0L);
-            vu_ensemble.put("sinistres_payes_VIE", 0L);
-            vu_ensemble.put("sinistres_payes_IARD", 0L);
-            vu_ensemble.put("nombre_contrat_total", 0L);
-            vu_ensemble.put("nombre_contrat_VIE", 0L);
-            vu_ensemble.put("nombre_contrat_IARD", 0L);
-            vu_ensemble.put("effectif_personnel_total", 0L);
-            vu_ensemble.put("effectif_personnel_VIE", 0L);
-            vu_ensemble.put("effectif_personnel_IARD", 0L);
-            vu_ensemble.put("provision_mathematiques", 0L);
-            vu_ensemble.put("sinistre_bon_a_payees", 0L);
-            vu_ensemble.put("sinistre_payees", 0L);
-            vu_ensemble.put("credit-caution", 0L);
-            vu_ensemble.put("Taux_Evolution_primes_emises_nettes_annulations", 0L);
-            vu_ensemble.put("Taux_Evolution_primes_emises_nettes_annulations_IARD", 0L);
-            vu_ensemble.put("Taux_Evolution_primes_emises_nettes_annulations", 0L);
-            vu_ensemble.put("Prestations_vie_effectivement", 0L);
-            vu_ensemble.put("Taux_Evolution_sinistres_a_payer", 0L);
-            vu_ensemble.put("Taux_Evolution_stock_sinistres_a_payer", 0L);
-            vu_ensemble.put("Taux_Evolution_provision_mathematiques", 0L);
-            vu_ensemble.put("Taux_Evolution_dont_sinistres_a_payer", 0L);
+            vu_ensemble.put("CA_VIE", (caVie != null ? caVie.doubleValue() : 0.0));
+            vu_ensemble.put("CA_IARD", (caIard != null ? caIard.doubleValue() : 0.0));
+            vu_ensemble.put("nombre_contrat_VIE", (contratVie != null ? contratVie.doubleValue() : 0.0));
+            vu_ensemble.put("nombre_contrat_IARD", (contratIard != null ? contratIard.doubleValue() : 0.0));
+
         }
 
         return vu_ensemble;
     }
 
+    // dashboard vu_ ensemble
+    @GetMapping("/vu_ensemble/{annee}/{trimestre}")
+    private Map<String, Double> getVuensemble(
+            @PathVariable(value = "annee", required = false) String annee,
+            @PathVariable(value = "trimestre", required = false) String trimestre) {
+        Map<String, Double> vu_ensemble = new HashMap<>();
+
+        if (annee != null && trimestre != null) {
+            int anneePrecedente = Integer.parseInt(annee) - 1;
+
+            // Taux d'évolution prime émise nette d'annulation pour VIE
+            Long primeAnneeselectionneeVIE = noteConjonctureVIERepository.sumPrimeEmiseNetteAnnulationForTrimestre(annee, trimestre);
+            Long primeAnneeselectionneprecedentVIE = noteConjonctureVIERepository.sumPrimeEmiseNetteAnnulationForTrimestre(String.valueOf(anneePrecedente), trimestre);
+            Double tauxEvolutionVIE = (primeAnneeselectionneeVIE != null && primeAnneeselectionneprecedentVIE != null) ? ((primeAnneeselectionneeVIE - primeAnneeselectionneprecedentVIE) * 100.0) / primeAnneeselectionneprecedentVIE : 0.0;
+
+            // Taux d'évolution prime émise nette d'annulation pour IARD
+            Long primeAnneeselectionneeIARD = noteConjonctureIARDRepository.sumPrimeEmiseNetteAnnulationForTrimestre(annee, trimestre);
+            Long primeAnneeselectionneprecedentIARD = noteConjonctureIARDRepository.sumPrimeEmiseNetteAnnulationForTrimestre(String.valueOf(anneePrecedente), trimestre);
+            Double tauxEvolutionIARD = (primeAnneeselectionneeIARD != null && primeAnneeselectionneprecedentIARD != null) ? ((primeAnneeselectionneeIARD - primeAnneeselectionneprecedentIARD) * 100.0) / primeAnneeselectionneprecedentIARD : 0.0;
+
+            Double tauxEvolutionCA = tauxEvolutionIARD + tauxEvolutionVIE;
+
+            // Calcul des autres valeurs nécessaires
+            Long totalSocietesIARD = noteConjonctureIARDRepository.countDistinctSocietesByAnneeAndTrimestre(annee, trimestre);
+            Long totalSocietesVIE = noteConjonctureVIERepository.countDistinctSocietesByAnneeAndTrimestre(annee, trimestre);
+            Long totalSocietes = (totalSocietesIARD != null ? totalSocietesIARD : 0L) + (totalSocietesVIE != null ? totalSocietesVIE : 0L);
+
+            Long caVie = noteConjonctureVIERepository.sumPrimeEmiseNetteAnnulationForTrimestre(annee, trimestre);
+            Long caIard = noteConjonctureIARDRepository.sumPrimeEmiseNetteAnnulationForTrimestre(annee, trimestre);
+            Double catotal = (caVie != null ? caVie.doubleValue() : 0.0) + (caIard != null ? caIard.doubleValue() : 0.0);
+
+            Long comIard = noteConjonctureIARDRepository.sumCommissionCourtierForTrimestre(annee, trimestre);
+            Long comVie = noteConjonctureVIERepository.sumCommissionCourtierForTrimestre(annee, trimestre);
+            Long comtotal = (comIard != null ? comIard : 0L) + (comVie != null ? comVie : 0L);
+
+            Long sinistrepayesVie = noteConjonctureVIERepository.sumPrestationVieEffectivementPayesForTrimestre(annee, trimestre);
+            Long sinistrepayesIard = noteConjonctureIARDRepository.sumSinistre_A_PayeesForTrimestre(annee, trimestre);
+            Long sinistreTotal = (sinistrepayesVie != null ? sinistrepayesVie : 0L) + (sinistrepayesIard != null ? sinistrepayesIard : 0L);
+
+            Long contratVie = noteConjonctureVIERepository.sumNombreContrat(annee, trimestre);
+            Long contratIard = noteConjonctureIARDRepository.sumNombreContrat(annee, trimestre);
+            Long contrattotal = (contratVie != null ? contratVie : 0L) + (contratIard != null ? contratIard : 0L);
+
+            Long effectifIard = noteConjonctureIARDRepository.sumEffectifPersonnelIard(annee, trimestre);
+            Long effectifVie = noteConjonctureVIERepository.sumEffectifPersonnelVie(annee, trimestre);
+            Long effectiftotal = (effectifIard != null ? effectifIard : 0L) + (effectifVie != null ? effectifVie : 0L);
+
+            Long sinistre_bon_a_paye = noteConjonctureIARDRepository.sumStock_de_sinistres_Bons_A_PayerForTrimestre(annee, trimestre);
+            Long provision_mathematique = noteConjonctureVIERepository.sumProvisionMathForTrimestre(annee, trimestre);
+            Long sinistre_payes = noteConjonctureIARDRepository.sumDont_Sisnistre_PayeeForTrimestre(annee, trimestre);
+            Long credit_caution = noteConjonctureIARDRepository.sumCredit_CautionForTrimestre(annee, trimestre);
+
+            // Ajout des valeurs calculées au dictionnaire
+            vu_ensemble.put("Total_Societes", (totalSocietes != null ? totalSocietes.doubleValue() : 0.0));
+            vu_ensemble.put("Nombre_Total_Societes_IARD", (totalSocietesIARD != null ? totalSocietesIARD.doubleValue() : 0.0));
+            vu_ensemble.put("Nombre_Total_Societes_VIE", (totalSocietesVIE != null ? totalSocietesVIE.doubleValue() : 0.0));
+            vu_ensemble.put("CA_total", catotal);
+            vu_ensemble.put("CA_VIE", (caVie != null ? caVie.doubleValue() : 0.0));
+            vu_ensemble.put("CA_IARD", (caIard != null ? caIard.doubleValue() : 0.0));
+            vu_ensemble.put("Commission_courtiers_total", (comtotal != null ? comtotal.doubleValue() : 0.0));
+            vu_ensemble.put("Commission_courtiers_VIE", (comVie != null ? comVie.doubleValue() : 0.0));
+            vu_ensemble.put("Commission_courtiers_IARD", (comIard != null ? comIard.doubleValue() : 0.0));
+            vu_ensemble.put("sinistres_payes_total", (sinistreTotal != null ? sinistreTotal.doubleValue() : 0.0));
+            vu_ensemble.put("sinistres_payes_VIE", (sinistrepayesVie != null ? sinistrepayesVie.doubleValue() : 0.0));
+            vu_ensemble.put("sinistres_payes_IARD", (sinistrepayesIard != null ? sinistrepayesIard.doubleValue() : 0.0));
+            vu_ensemble.put("nombre_contrat_total", (contrattotal != null ? contrattotal.doubleValue() : 0.0));
+            vu_ensemble.put("nombre_contrat_VIE", (contratVie != null ? contratVie.doubleValue() : 0.0));
+            vu_ensemble.put("nombre_contrat_IARD", (contratIard != null ? contratIard.doubleValue() : 0.0));
+            vu_ensemble.put("effectif_personnel_total", (effectiftotal != null ? effectiftotal.doubleValue() : 0.0));
+            vu_ensemble.put("effectif_personnel_VIE", (effectifVie != null ? effectifVie.doubleValue() : 0.0));
+            vu_ensemble.put("effectif_personnel_IARD", (effectifIard != null ? effectifIard.doubleValue() : 0.0));
+            vu_ensemble.put("provision_mathematiques", (provision_mathematique != null ? provision_mathematique.doubleValue() : 0.0));
+            vu_ensemble.put("sinistre_bon_a_payees", (sinistre_bon_a_paye != null ? sinistre_bon_a_paye.doubleValue() : 0.0));
+            vu_ensemble.put("sinistre_payees", (sinistre_payes != null ? sinistre_payes.doubleValue() : 0.0));
+            vu_ensemble.put("credit-caution", (credit_caution != null ? credit_caution.doubleValue() : 0.0));
+            vu_ensemble.put("Taux_Evolution_primes_emises_nettes_annulations_VIE", tauxEvolutionVIE);
+            vu_ensemble.put("Taux_Evolution_primes_emises_nettes_annulations_IARD", tauxEvolutionIARD);
+            vu_ensemble.put("Taux_Evolution_primes_emises_nettes_annulations", tauxEvolutionCA);
+        } else {
+            // Si l'année ou le trimestre est null, on renvoie des valeurs par défaut de 0
+            vu_ensemble.put("Total_Societes", 0.0);
+            vu_ensemble.put("Nombre_Total_Societes_IARD", 0.0);
+            vu_ensemble.put("Nombre_Total_Societes_VIE", 0.0);
+            vu_ensemble.put("CA_total", 0.0);
+            vu_ensemble.put("CA_VIE", 0.0);
+            vu_ensemble.put("CA_IARD", 0.0);
+            vu_ensemble.put("Commission_courtiers_total", 0.0);
+            vu_ensemble.put("Commission_courtiers_VIE", 0.0);
+            vu_ensemble.put("Commission_courtiers_IARD", 0.0);
+            vu_ensemble.put("sinistres_payes_total", 0.0);
+            vu_ensemble.put("sinistres_payes_VIE", 0.0);
+            vu_ensemble.put("sinistres_payes_IARD", 0.0);
+            vu_ensemble.put("nombre_contrat_total", 0.0);
+            vu_ensemble.put("nombre_contrat_VIE", 0.0);
+            vu_ensemble.put("nombre_contrat_IARD", 0.0);
+            vu_ensemble.put("effectif_personnel_total", 0.0);
+            vu_ensemble.put("effectif_personnel_VIE", 0.0);
+            vu_ensemble.put("effectif_personnel_IARD", 0.0);
+            vu_ensemble.put("provision_mathematiques", 0.0);
+            vu_ensemble.put("sinistre_bon_a_payees", 0.0);
+            vu_ensemble.put("sinistre_payees", 0.0);
+            vu_ensemble.put("credit-caution", 0.0);
+            vu_ensemble.put("Taux_Evolution_primes_emises_nettes_annulations_VIE", 0.0);
+            vu_ensemble.put("Taux_Evolution_primes_emises_nettes_annulations_IARD", 0.0);
+            vu_ensemble.put("Taux_Evolution_primes_emises_nettes_annulations", 0.0);
+        }
+
+        return vu_ensemble;
+    }
     // dashboard Iard
     @GetMapping("/IARD/{annee}/{trimestre}")
     public ResponseEntity<Map<String, List<Map<String, Object>>>> getInformationIARD(
